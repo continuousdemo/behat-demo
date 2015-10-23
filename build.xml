@@ -9,7 +9,8 @@
     </target>
 
     <target name="drop-db">
-        <echo file="./data/db/drop.sql">DROP DATABASE IF EXISTS `${db.name}`;</echo>
+        <mkdir dir="${project.basedir}/data/db" />
+        <echo file="${project.basedir}/data/db/drop.sql">DROP DATABASE IF EXISTS `${db.name}`;</echo>
         <pdosqlexec url="mysql:host=${db.host}" userid="${db.username}" password="${db.password}">
             <transaction src="./data/db/drop.sql"/>
         </pdosqlexec>
@@ -18,6 +19,7 @@
     </target>
 
     <target name="init-db" description="Create Database and Grants">
+        <mkdir dir="${project.basedir}/data/db" />
         <echo file="${project.basedir}/data/db/create.sql">
             CREATE DATABASE IF NOT EXISTS ${db.name};
             GRANT USAGE ON *.* TO '${db.username}'@'%' IDENTIFIED BY '${db.password}';
