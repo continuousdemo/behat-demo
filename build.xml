@@ -1,0 +1,57 @@
+<project name="cphp demo project" default="help" basedir=".">
+    <property file="./build.properties" />
+
+    <target name="help" description="List available targets">
+        <exec executable="vendor/bin/phing"
+              passthru="true">
+            <arg value="-l"/>
+        </exec>
+    </target>
+
+    <target name="drop-db">
+        <echo file="./data/db/drop.sql">DROP DATABASE IF EXISTS `${db.name}`;</echo>
+        <pdosqlexec url="mysql:host=${db.host}" userid="${db.username}" password="${db.password}">
+            <transaction src="./data/db/drop.sql"/>
+        </pdosqlexec>
+
+        <delete file="${project.basedir}/data/db/drop.sql" quiet="true"/>
+    </target>
+
+    <target name="init-db" description="Create Database and Grants">
+        <echo file="${project.basedir}/data/db/create.sql">
+            CREATE DATABASE IF NOT EXISTS ${db.name};
+            GRANT USAGE ON *.* TO '${db.username}'@'%' IDENTIFIED BY '${db.password}';
+            GRANT UPDATE,CREATE,REFERENCES,ALTER,LOCK TABLES,CREATE VIEW,CREATE
+            ROUTINE,TRIGGER,INSERT,DELETE,DROP,INDEX,CREATE TEMPORARY TABLES,EXECUTE,SHOW VIEW,ALTER ROUTINE,SELECT ON
+            `${db.name}`.* TO '${db.username}'@'%';
+        </echo>
+
+        <pdosqlexec url="mysql:host=${db.host}" userid="${db.username}" password="${db.password}">
+            <transaction src="${project.basedir}/data/db/create.sql"/>
+        </pdosqlexec>
+
+        <delete file="${project.basedir}/data/db/create.sql" quiet="true"/>
+    </target>
+
+    <target name="reset-db"
+            description="Drop database and reset data"
+            depends="drop-db, init-db"/>
+
+    <target name="link-docroot" description="Link site document root to Apache document root">
+        <symlink link="${server.docroot}" target="${project.basedir}/public" overwrite="true" />
+    </target>
+
+    <target name="setup-db" description="Setup Database Credentials">
+        <loadfile property="db.config" file="${project.basedir}/config/autoload/database.local.php.dist">
+            <filterchain>
+                <replacetokens>
+                    <token key="db.host" value="${db.host}"/>
+                    <token key="db.username" value="${db.username}"/>
+                    <token key="db.password" value="${db.password}"/>
+                    <token key="db.name" value="${db.name}"/>
+                </replacetokens>
+            </filterchain>
+        </loadfile>
+        <echo message="${db.config}" file="${project.basedir}/config/autoload/database.local.php"/>
+    </target>
+</project>

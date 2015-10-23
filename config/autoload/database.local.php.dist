@@ -1,0 +1,28 @@
+<?php
+return [
+    'doctrine' =>
+    [
+        'connection' =>
+        [
+            'orm_default' =>
+            [
+                'params'      =>
+                [
+                    'host'     => '@db.host@',
+                    'user'     => '@db.username@',
+                    'password' => '@db.password@',
+                    'dbname'   => '@db.name@'
+                ]
+            ]
+        ],
+    ],
+    'zf-oauth2' =>
+    [
+        'db' =>
+        [
+            'dsn'      => 'mysql:dbname=@db.name@;host=@db.host@',
+            'username' => '@db.username@',
+            'password' => '@db.password@'
+        ],
+    ],
+];
