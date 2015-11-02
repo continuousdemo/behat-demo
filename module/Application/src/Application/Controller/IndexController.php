@@ -16,13 +16,16 @@ class IndexController extends AbstractActionController
 {
     public function indexAction()
     {
+        $username = $this->params()->fromPost('username');
+        $email    = $this->params()->fromPost('email');
+
         /** @var \Application\Mapper\User $mapperUser */
         $mapperUser = $this->getServiceLocator()->get('mapper.user');
 
         /** @var \Application\Entity\User $user */
         $user = $this->getServiceLocator()->get('entity.user');
-        $user->setEmail('pascal.paulis@continuousphp.com')
-             ->setUsername('ppaulis');
+        $user->setEmail($email)
+             ->setUsername($username);
 
         $mapperUser->store($user)
                    ->flush();

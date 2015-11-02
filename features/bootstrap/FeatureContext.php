@@ -87,19 +87,25 @@ class FeatureContext extends BehatContext //MinkContext if you want to test web 
         $hit = false;
 
         foreach ($allusers as $user) {
+            $found = true;
+
             foreach ($data as $row) {
                 $getter = 'get' . ucfirst($row[0]);
 
                 if ($user->$getter() != $row[1]) {
-                    continue;
+                    $found = false;
+                    break;
                 }
 
-                $hit = true;
                 break 2;
+            }
+
+            if ($found) {
+                break;
             }
         }
 
-        if (!$hit) {
+        if (!$found) {
             throw new BehaviorException("The user hasn't been created.");
         }
     }

@@ -6,7 +6,9 @@ Feature: Users
 
   Scenario: Successfully create a User
     #Given ...
-    When I send GET request to "/"
+    When I send POST request to "/" with values:
+      | username | ppaulis                         |
+      | email    | pascal.paulis@continuousphp.com |
     Then response status code should be 200
     And the database should contain a user with the following data
       | username | ppaulis                         |
