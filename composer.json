@@ -19,11 +19,5 @@
         "behat/behat": "2.5.5",
         "guzzle/guzzle": "3.9.2",
         "doctrine/data-fixtures": "v1.0.0"
-    },
-    "http-basic": {
-        "github.com": {
-            "username": "continuousphptest",
-            "password": "azerty1234"
-        }
     }
 }
